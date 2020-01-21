@@ -1,0 +1,43 @@
+package me.ling.kipfin.entities;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
+    public WeekSubjects(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public WeekSubjects() {
+    }
+
+    public WeekSubjects(@NotNull Collection<? extends DaySubjects<T>> c) {
+        super(c);
+    }
+
+    /**
+     * Возвращает предметы по дню недели
+     *
+     * @param dayIndex - индекс дня недели
+     * @return - карта группа->дисциплины
+     */
+    @Nullable
+    public DaySubjects<T> getSubjects(int dayIndex) {
+        return this.get(dayIndex);
+    }
+
+    /**
+     * Возвращает дисциплины по дню недели и группе
+     * @param dayIndex - индекс дня недели
+     * @param group - группа
+     * @return  - дисциплины
+     */
+    @Nullable
+    public List<T> getSubjects(int dayIndex, String group){
+        return this.get(dayIndex).get(group);
+    }
+}
