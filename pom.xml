@@ -6,7 +6,16 @@
 
     <groupId>me.ling.kipfin</groupId>
     <artifactId>kipfin-timetable</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.2</version>
+
+    <distributionManagement>
+        <repository>
+            <id>github</id>
+            <name>KIPFIN Timetable module</name>
+            <url>https://maven.pkg.github.com/DiegoLing33/kipfin-timetable</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
