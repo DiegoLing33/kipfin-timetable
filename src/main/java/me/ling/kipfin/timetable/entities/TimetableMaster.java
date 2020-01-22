@@ -208,6 +208,7 @@ public class TimetableMaster {
      * @param group - группа
      * @return - расписание группы на неделю
      */
+    @JsonIgnore
     public List<WeekTimetable> getWeekTimetable(String group) {
         final int[] weekDayIndex = {0};
         return this.getWeek().getGroupWeek(group).stream().map(subjects -> new WeekTimetable(

@@ -19,6 +19,7 @@
 
 package me.ling.kipfin.timetable.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,6 +69,7 @@ public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
      * @param group - группа
      * @return - недельное расписание
      */
+    @JsonIgnore
     public List<List<T>> getGroupWeek(String group) {
         return this.stream().map(tDaySubjects -> tDaySubjects.get(group))
                 .collect(Collectors.toCollection(ArrayList::new));
