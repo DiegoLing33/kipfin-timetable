@@ -43,7 +43,7 @@ public class TimetableMaster {
      * @param classroomsFile - файл аудиторий
      * @param weekFile       - файл недели
      * @return - объект мастер-расписания
-     * @throws IOException        - ошибки при чтении файлов для парсинга
+     * @throws IOException - ошибки при чтении файлов для парсинга
      */
     public static TimetableMaster create(String classroomsFile, String weekFile) throws IOException {
         ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsFile);
@@ -200,5 +200,21 @@ public class TimetableMaster {
      */
     public List<ExtendedSubject> getGroupSubjects(String group) {
         return this.timetable.get(group);
+    }
+
+    /**
+     * Формирует расписание группы на неделю
+     *
+     * @param group - группа
+     * @return - расписание группы на неделю
+     */
+    public List<WeekTimetable> getWeekTimetable(String group) {
+        final int[] weekDayIndex = {0};
+        return this.getWeek().getGroupWeek(group).stream().map(subjects -> new WeekTimetable(
+                group,
+                DateUtils.weekDaysNames[weekDayIndex[0]],
+                weekDayIndex[0]++,
+                subjects
+        )).collect(Collectors.toCollection(ArrayList::new));
     }
 }

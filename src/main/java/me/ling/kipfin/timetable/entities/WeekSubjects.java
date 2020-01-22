@@ -25,6 +25,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
     public WeekSubjects(int initialCapacity) {
@@ -51,12 +52,24 @@ public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
 
     /**
      * Возвращает дисциплины по дню недели и группе
+     *
      * @param dayIndex - индекс дня недели
-     * @param group - группа
-     * @return  - дисциплины
+     * @param group    - группа
+     * @return - дисциплины
      */
     @Nullable
-    public List<T> getSubjects(int dayIndex, String group){
+    public List<T> getSubjects(int dayIndex, String group) {
         return this.get(dayIndex).get(group);
+    }
+
+    /**
+     * Возвращает неделю группы
+     *
+     * @param group - группа
+     * @return - недельное расписание
+     */
+    public List<List<T>> getGroupWeek(String group) {
+        return this.stream().map(tDaySubjects -> tDaySubjects.get(group))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 }
