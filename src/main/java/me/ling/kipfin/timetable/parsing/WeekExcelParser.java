@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WeekExcelParser extends KipfinExcelParser<WeekSubjects<Subject>> {
+public class WeekExcelParser extends UniversityTimetableExcelParser<WeekSubjects<Subject>> {
 
     public WeekExcelParser(String path) throws IOException {
         super(path);

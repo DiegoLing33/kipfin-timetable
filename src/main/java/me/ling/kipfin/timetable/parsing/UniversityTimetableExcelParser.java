@@ -39,9 +39,9 @@ import java.util.function.Function;
  *
  * @param <T>
  */
-public abstract class KipfinExcelParser<T> extends ExcelParser<T> {
+public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
 
-    public KipfinExcelParser(String path) throws IOException {
+    public UniversityTimetableExcelParser(String path) throws IOException {
         super(path);
     }
 

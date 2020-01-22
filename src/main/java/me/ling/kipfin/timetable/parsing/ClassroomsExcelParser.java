@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * Парсер файла excel аудиторий
  */
-public final class ClassroomsExcelParser extends KipfinExcelParser<Classrooms> {
+public final class ClassroomsExcelParser extends UniversityTimetableExcelParser<Classrooms> {
 
     /**
      * Конструктор
