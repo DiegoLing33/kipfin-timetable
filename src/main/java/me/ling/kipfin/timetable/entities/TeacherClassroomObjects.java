@@ -17,33 +17,43 @@
  *
  */
 
-package me.ling.kipfin.entities;
+package me.ling.kipfin.timetable.entities;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * Расширенная сущность дисциплины
+ * Связка: преподаватель -> аудитория
  */
-public class ExtendedSubject extends Subject {
-
-    @JsonProperty("subject_who")
-    protected TeacherClassroomObjects who = new TeacherClassroomObjects();
-
-
-    public ExtendedSubject() {
+public class TeacherClassroomObjects extends HashMap<String, String> {
+    public TeacherClassroomObjects(int initialCapacity, float loadFactor) {
+        super(initialCapacity, loadFactor);
     }
 
-    public ExtendedSubject(String title, Integer index, TeacherClassroomObjects who) {
-        super(title, index);
-        this.who = who;
+    public TeacherClassroomObjects(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public TeacherClassroomObjects() {
+    }
+
+    public TeacherClassroomObjects(Map<? extends String, ? extends String> m) {
+        super(m);
     }
 
     /**
-     * Возвращает связку Преподаватель->аудитория
-     *
-     * @return - связка
+     * Возвращает сет преподавателей через запятую
+     * @return - преподаватели через запятую
      */
-    public TeacherClassroomObjects getWho() {
-        return who;
+    public String getTeachersJoin(){
+        return String.join(", ", this.keySet());
+    }
+
+    /**
+     * Возвращает сет аудиторий через запятую
+     * @return - аудитории через запятую
+     */
+    public String getClassroomsJoin(){
+        return String.join(", ", this.values());
     }
 }

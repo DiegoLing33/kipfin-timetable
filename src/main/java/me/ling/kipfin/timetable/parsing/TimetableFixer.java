@@ -17,7 +17,7 @@
  *
  */
 
-package me.ling.kipfin.parsing;
+package me.ling.kipfin.timetable.parsing;
 
 import me.ling.kipfin.core.utils.StringUtils;
 

@@ -17,7 +17,7 @@
  *
  */
 
-package me.ling.kipfin.entities;
+package me.ling.kipfin.timetable.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -25,10 +25,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import me.ling.kipfin.core.log.Logger;
 import me.ling.kipfin.core.utils.DateUtils;
 import me.ling.kipfin.core.utils.JsonUtils;
-import me.ling.kipfin.database.GroupsDB;
-import me.ling.kipfin.exceptions.TimetableException;
-import me.ling.kipfin.parsing.ClassroomsExcelParser;
-import me.ling.kipfin.parsing.WeekExcelParser;
+import me.ling.kipfin.database.university.GroupsDB;
+import me.ling.kipfin.timetable.parsing.WeekExcelParser;
+import me.ling.kipfin.timetable.parsing.ClassroomsExcelParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,9 +44,8 @@ public class TimetableMaster {
      * @param weekFile       - файл недели
      * @return - объект мастер-расписания
      * @throws IOException        - ошибки при чтении файлов для парсинга
-     * @throws TimetableException - ошибки при парсинге
      */
-    public static TimetableMaster create(String classroomsFile, String weekFile) throws IOException, TimetableException {
+    public static TimetableMaster create(String classroomsFile, String weekFile) throws IOException {
         ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsFile);
         WeekExcelParser weekExcelParser = new WeekExcelParser(weekFile);
 
@@ -66,7 +64,8 @@ public class TimetableMaster {
         Logger.logAs("TMR Builder", "Debug: today [", weekDayIndex, "] size:", week.get(weekDayIndex).values().size());
 
         DaySubjects<ExtendedSubject> daySubjects = new DaySubjects<>();
-        GroupsDB.shared.getCache().values().forEach(group -> {
+        GroupsDB.shared.getCache().values().forEach(universityGroup -> {
+            String group = universityGroup.getTitle();
             List<Subject> subjectList = week.getSubjects(weekDayIndex, group);
             if (subjectList != null) {
                 daySubjects.put(group, subjectList.stream().map(subject -> {
@@ -190,7 +189,7 @@ public class TimetableMaster {
      */
     @JsonIgnore
     public boolean isEven() {
-        return this.getWeekNumber() % 2 > 0;
+        return this.getWeekNumber() % 2 != 0;
     }
 
     /**

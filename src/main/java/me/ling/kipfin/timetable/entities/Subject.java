@@ -17,13 +17,44 @@
  *
  */
 
-package me.ling.kipfin.exceptions;
+package me.ling.kipfin.timetable.entities;
 
-public class GroupNotFoundException extends TimetableException {
-    public GroupNotFoundException(String g){
-        super("Группа [ " + g + " ] не найдена!");
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * Цисциплина
+ */
+public class Subject {
+
+    @JsonProperty("subject_name")
+    protected String title;
+
+    @JsonProperty("subject_index")
+    protected Integer index;
+
+    public Subject() {
     }
-    private GroupNotFoundException(Integer g){
-        super("Группа с идентификатором [ " + g + " ] не найдена!");
+
+    public Subject(String title, Integer index) {
+        this.title = title;
+        this.index = index;
+    }
+
+    /**
+     * Возвращает название дисциплины
+     *
+     * @return - название дисциплины
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Возвращает номер дисциплины
+     *
+     * @return - номер дисциплины
+     */
+    public Integer getIndex() {
+        return index;
     }
 }

@@ -17,7 +17,7 @@
  *
  */
 
-package me.ling.kipfin.entities;
+package me.ling.kipfin.timetable.entities;
 
 import java.util.HashMap;
 import java.util.List;

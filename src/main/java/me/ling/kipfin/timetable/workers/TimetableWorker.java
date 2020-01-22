@@ -17,44 +17,26 @@
  *
  */
 
-package me.ling.kipfin.entities;
+package me.ling.kipfin.timetable.workers;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import me.ling.kipfin.timetable.entities.ExtendedSubject;
+
+import java.util.List;
 
 /**
- * Цисциплина
+ * Обработка расписания
  */
-public class Subject {
+public class TimetableWorker {
 
-    @JsonProperty("subject_name")
-    protected String title;
-
-    @JsonProperty("subject_index")
-    protected Integer index;
-
-    public Subject() {
+    public static String createTextSubjectsView(List<ExtendedSubject> subjects) {
+        final String[] result = {""};
+        subjects.forEach(subject -> {
+            result[0] += subject.getTitle();
+            result[0] += ("Номер: " + (subject.getIndex() + 1) + "\n");
+            result[0] += ("Кто: " + subject.getWho().getTeachersJoin() + "\n");
+            result[0] += ("Где: " + subject.getWho().getClassroomsJoin() + "\n\n");
+        });
+        return result[0];
     }
 
-    public Subject(String title, Integer index) {
-        this.title = title;
-        this.index = index;
-    }
-
-    /**
-     * Возвращает название дисциплины
-     *
-     * @return - название дисциплины
-     */
-    public String getTitle() {
-        return title;
-    }
-
-    /**
-     * Возвращает номер дисциплины
-     *
-     * @return - номер дисциплины
-     */
-    public Integer getIndex() {
-        return index;
-    }
 }

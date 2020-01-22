@@ -17,11 +17,11 @@
  *
  */
 
-package me.ling.kipfin.parsing;
+package me.ling.kipfin.timetable.parsing;
 
-import me.ling.kipfin.entities.DaySubjects;
-import me.ling.kipfin.entities.Subject;
-import me.ling.kipfin.entities.WeekSubjects;
+import me.ling.kipfin.timetable.entities.WeekSubjects;
+import me.ling.kipfin.timetable.entities.DaySubjects;
+import me.ling.kipfin.timetable.entities.Subject;
 
 import java.io.IOException;
 import java.util.ArrayList;

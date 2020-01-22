@@ -17,46 +17,44 @@
  *
  */
 
-package me.ling.kipfin.entities;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+package me.ling.kipfin.timetable.entities;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
-    public WeekSubjects(int initialCapacity) {
+/**
+ * Аудитории
+ */
+public class Classrooms extends HashMap<String, List<Classroom>> {
+    public Classrooms(int initialCapacity, float loadFactor) {
+        super(initialCapacity, loadFactor);
+    }
+
+    public Classrooms(int initialCapacity) {
         super(initialCapacity);
     }
 
-    public WeekSubjects() {
+    public Classrooms() {
     }
 
-    public WeekSubjects(@NotNull Collection<? extends DaySubjects<T>> c) {
-        super(c);
+    public Classrooms(Map<? extends String, ? extends List<Classroom>> m) {
+        super(m);
     }
 
     /**
-     * Возвращает предметы по дню недели
+     * Возвращает аудитории по группе
      *
-     * @param dayIndex - индекс дня недели
-     * @return - карта группа->дисциплины
-     */
-    @Nullable
-    public DaySubjects<T> getSubjects(int dayIndex) {
-        return this.get(dayIndex);
-    }
-
-    /**
-     * Возвращает дисциплины по дню недели и группе
-     * @param dayIndex - индекс дня недели
      * @param group - группа
-     * @return  - дисциплины
+     * @return - список аудиторий, который ключает в себя группу
      */
-    @Nullable
-    public List<T> getSubjects(int dayIndex, String group){
-        return this.get(dayIndex).get(group);
+    public List<Classroom> getClassroomsByGroup(String group) {
+        var items = new ArrayList<Classroom>();
+        // for each teacher
+        this.values().forEach(teacherSection -> teacherSection.forEach(item -> {
+            if (item.group.contains(group)) items.add(item);
+        }));
+        return items;
     }
 }

@@ -17,26 +17,33 @@
  *
  */
 
-package me.ling.kipfin.workers;
+package me.ling.kipfin.timetable.entities;
 
-import me.ling.kipfin.entities.ExtendedSubject;
-
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * Обработка расписания
+ * Расширенная сущность дисциплины
  */
-public class TimetableWorker {
+public class ExtendedSubject extends Subject {
 
-    public static String createTextSubjectsView(List<ExtendedSubject> subjects) {
-        final String[] result = {""};
-        subjects.forEach(subject -> {
-            result[0] += subject.getTitle();
-            result[0] += ("Номер: " + (subject.getIndex() + 1) + "\n");
-            result[0] += ("Кто: " + subject.getWho().getTeachersJoin() + "\n");
-            result[0] += ("Где: " + subject.getWho().getClassroomsJoin() + "\n\n");
-        });
-        return result[0];
+    @JsonProperty("subject_who")
+    protected TeacherClassroomObjects who = new TeacherClassroomObjects();
+
+
+    public ExtendedSubject() {
     }
 
+    public ExtendedSubject(String title, Integer index, TeacherClassroomObjects who) {
+        super(title, index);
+        this.who = who;
+    }
+
+    /**
+     * Возвращает связку Преподаватель->аудитория
+     *
+     * @return - связка
+     */
+    public TeacherClassroomObjects getWho() {
+        return who;
+    }
 }

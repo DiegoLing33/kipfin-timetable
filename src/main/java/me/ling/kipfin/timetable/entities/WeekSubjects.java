@@ -17,43 +17,46 @@
  *
  */
 
-package me.ling.kipfin.entities;
+package me.ling.kipfin.timetable.entities;
 
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Связка: преподаватель -> аудитория
- */
-public class TeacherClassroomObjects extends HashMap<String, String> {
-    public TeacherClassroomObjects(int initialCapacity, float loadFactor) {
-        super(initialCapacity, loadFactor);
-    }
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
-    public TeacherClassroomObjects(int initialCapacity) {
+public class WeekSubjects<T extends Subject> extends ArrayList<DaySubjects<T>> {
+    public WeekSubjects(int initialCapacity) {
         super(initialCapacity);
     }
 
-    public TeacherClassroomObjects() {
+    public WeekSubjects() {
     }
 
-    public TeacherClassroomObjects(Map<? extends String, ? extends String> m) {
-        super(m);
-    }
-
-    /**
-     * Возвращает сет преподавателей через запятую
-     * @return - преподаватели через запятую
-     */
-    public String getTeachersJoin(){
-        return String.join(", ", this.keySet());
+    public WeekSubjects(@NotNull Collection<? extends DaySubjects<T>> c) {
+        super(c);
     }
 
     /**
-     * Возвращает сет аудиторий через запятую
-     * @return - аудитории через запятую
+     * Возвращает предметы по дню недели
+     *
+     * @param dayIndex - индекс дня недели
+     * @return - карта группа->дисциплины
      */
-    public String getClassroomsJoin(){
-        return String.join(", ", this.values());
+    @Nullable
+    public DaySubjects<T> getSubjects(int dayIndex) {
+        return this.get(dayIndex);
+    }
+
+    /**
+     * Возвращает дисциплины по дню недели и группе
+     * @param dayIndex - индекс дня недели
+     * @param group - группа
+     * @return  - дисциплины
+     */
+    @Nullable
+    public List<T> getSubjects(int dayIndex, String group){
+        return this.get(dayIndex).get(group);
     }
 }

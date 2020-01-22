@@ -17,11 +17,11 @@
  *
  */
 
-package me.ling.kipfin.parsing;
+package me.ling.kipfin.timetable.parsing;
 
 import me.ling.kipfin.core.utils.DateUtils;
-import me.ling.kipfin.entities.Classroom;
-import me.ling.kipfin.entities.Classrooms;
+import me.ling.kipfin.timetable.entities.Classroom;
+import me.ling.kipfin.timetable.entities.Classrooms;
 
 import java.io.IOException;
 import java.time.LocalDate;

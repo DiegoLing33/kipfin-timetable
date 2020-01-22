@@ -17,13 +17,13 @@
  *
  */
 
-package me.ling.kipfin.managers;
+package me.ling.kipfin.timetable.managers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import me.ling.kipfin.core.FTPClient;
+import me.ling.kipfin.core.ftp.FTPClient;
 import me.ling.kipfin.core.log.Logger;
 import me.ling.kipfin.core.managers.FTPManager;
-import me.ling.kipfin.entities.TimetableMaster;
+import me.ling.kipfin.timetable.entities.TimetableMaster;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;

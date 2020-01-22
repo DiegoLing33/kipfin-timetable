@@ -17,19 +17,20 @@
  *
  */
 
-package me.ling.kipfin.parsing;
+package me.ling.kipfin.timetable.parsing;
 
 import me.ling.kipfin.core.log.LoggerColors;
 import me.ling.kipfin.core.parsers.ExcelParser;
 import me.ling.kipfin.core.utils.StringUtils;
-import me.ling.kipfin.database.GroupsDB;
-import me.ling.kipfin.database.TeachersDB;
-import me.ling.kipfin.exceptions.GroupNotFoundException;
-import me.ling.kipfin.exceptions.TeacherNotFoundException;
+import me.ling.kipfin.database.university.GroupsDB;
+import me.ling.kipfin.database.university.TeachersDB;
+import me.ling.kipfin.exceptions.university.GroupNotFoundException;
+import me.ling.kipfin.exceptions.university.TeacherNotFoundException;
 import org.apache.poi.ss.usermodel.CellType;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
@@ -44,7 +45,7 @@ public abstract class KipfinExcelParser<T> extends ExcelParser<T> {
         super(path);
     }
 
-    public static List<String> IGNORED_GROUP_NAMES = List.of("конс");
+    public static List<String> IGNORED_GROUP_NAMES = new ArrayList<>(List.of("конс", "кл.час"));
 
     /**
      * Возвращает группу из ячейки
@@ -65,13 +66,15 @@ public abstract class KipfinExcelParser<T> extends ExcelParser<T> {
                 this.wait("Найден пробел. Изучение по частям!");
                 List<String> groups = List.of(fixed.split(" "));
                 for (String __group : groups) {
-                    if (!IGNORED_GROUP_NAMES.contains(__group) && !GroupsDB.shared.getCache().containsValue(__group))
+                    if (!IGNORED_GROUP_NAMES.contains(__group) && !GroupsDB.shared.contains(universityGroup ->
+                            universityGroup.getTitle().equals(__group)))
                         throw new GroupNotFoundException(__group);
                     this.result(true);
                 }
                 return fixed;
             }
-            if (GroupsDB.shared.getCache().containsValue(fixed) || IGNORED_GROUP_NAMES.contains(fixed)) return fixed;
+            if (GroupsDB.shared.contains(universityGroup -> universityGroup.getTitle().equals(fixed))
+                    || IGNORED_GROUP_NAMES.contains(fixed)) return fixed;
             else throw new GroupNotFoundException(fixed);
         }
         return null;
