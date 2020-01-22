@@ -24,6 +24,8 @@ import me.ling.kipfin.core.ftp.FTPClient;
 import me.ling.kipfin.core.log.Logger;
 import me.ling.kipfin.core.managers.FTPManager;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
+import me.ling.kipfin.timetable.exceptions.NoTimetableOnDateException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
@@ -88,9 +90,10 @@ public class TimetableManager {
      *
      * @param date - дата расписания
      * @return - объект расписания
+     * @throws NoTimetableOnDateException - выбрасывает исключение, в случае, если расписание на указанную дату не удалось скачать
      */
-    @Nullable
-    public static TimetableMaster download(String date) {
+    @NotNull
+    public static TimetableMaster download(String date) throws NoTimetableOnDateException {
         try {
             Logger.logAs("Timetable Manager", Logger.WAIT, "Получение расписания на " + date);
             URL url = new URL(TIMETABLE_WEB_PATH + "/" + date + ".json");
@@ -98,7 +101,7 @@ public class TimetableManager {
             return new ObjectMapper().readValue(url, TimetableMaster.class);
         } catch (Exception e) {
             Logger.logAs("Timetable Manager", Logger.NO, "Получение расписания на " + date);
-            return null;
+            throw new NoTimetableOnDateException(date);
         }
     }
 
@@ -107,13 +110,13 @@ public class TimetableManager {
      *
      * @param date - дата расписания
      * @return - объект расписания
+     * @throws NoTimetableOnDateException - выбрасывает исключение, в случае, если расписание на указанную дату не удалось скачать
      */
-    @Nullable
-    public static TimetableMaster downloadOrGetCache(String date) {
+    @NotNull
+    public static TimetableMaster downloadOrGetCache(String date) throws NoTimetableOnDateException {
         if (!TimetableManager.cache.containsKey(date)) {
             var master = TimetableManager.download(date);
-            if (master != null) TimetableManager.cache.put(date, master);
-            else return null;
+            TimetableManager.cache.put(date, master);
         }
         return TimetableManager.cache.get(date);
     }
