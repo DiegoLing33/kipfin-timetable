@@ -48,6 +48,16 @@ public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
     public static List<String> IGNORED_GROUP_NAMES = new ArrayList<>(List.of("конс", "кл.час"));
 
     /**
+     * Возвращает true, если это файл аудиторий
+     * @return  - результат проверки файла
+     */
+    public Boolean isClassroomsFile(){
+        var cell = this.getCell(0, 0);
+        return cell != null && cell.getCellType().equals(CellType.STRING) &&
+                cell.getStringCellValue().contains("Аудитор");
+    }
+
+    /**
      * Возвращает группу из ячейки
      *
      * @param rowIndex - строка

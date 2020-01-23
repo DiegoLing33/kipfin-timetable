@@ -26,7 +26,6 @@ import me.ling.kipfin.core.managers.FTPManager;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
 import me.ling.kipfin.timetable.exceptions.NoTimetableOnDateException;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.net.URL;
