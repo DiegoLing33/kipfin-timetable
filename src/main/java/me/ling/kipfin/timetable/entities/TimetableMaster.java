@@ -35,7 +35,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *  Мастер-расписание
+ */
 public class TimetableMaster {
+
+    /**
+     * Выполняет построение мастер-расписания
+     *
+     * @param classroomsBytes - байты аудиторий
+     * @param weekBytes       - байты недели
+     * @return - объект мастер-расписания
+     * @throws IOException - ошибки при чтении файлов для парсинга
+     */
+    public static TimetableMaster create(byte[] classroomsBytes, byte[] weekBytes) throws IOException {
+        ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsBytes);
+        WeekExcelParser weekExcelParser = new WeekExcelParser(weekBytes);
+        return TimetableMaster.create(classroomsExcelParser, weekExcelParser);
+    }
 
     /**
      * Выполняет построение мастер-расписания
@@ -48,7 +65,18 @@ public class TimetableMaster {
     public static TimetableMaster create(String classroomsFile, String weekFile) throws IOException {
         ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsFile);
         WeekExcelParser weekExcelParser = new WeekExcelParser(weekFile);
+        return TimetableMaster.create(classroomsExcelParser, weekExcelParser);
+    }
 
+    /**
+     * Выполняет построение мастер-расписания
+     *
+     * @param classroomsExcelParser - парсер аудиторий
+     * @param weekExcelParser       - парсер недели
+     * @return - объект мастер-расписания
+     * @throws IOException - ошибки при чтении файлов для парсинга
+     */
+    public static TimetableMaster create(ClassroomsExcelParser classroomsExcelParser, WeekExcelParser weekExcelParser) throws IOException {
         var classrooms = classroomsExcelParser.start();
         var week = weekExcelParser.start();
 
