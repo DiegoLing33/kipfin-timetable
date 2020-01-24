@@ -44,6 +44,10 @@ public final class ClassroomsExcelParser extends UniversityTimetableExcelParser<
         super(path);
     }
 
+    public ClassroomsExcelParser(byte[] bytes) throws IOException {
+        super(bytes);
+    }
+
     /**
      * Возвращает дату аудиторий
      *

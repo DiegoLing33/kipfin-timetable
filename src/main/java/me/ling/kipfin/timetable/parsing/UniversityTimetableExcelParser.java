@@ -41,11 +41,16 @@ import java.util.function.Function;
  */
 public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
 
+
+    public static List<String> IGNORED_GROUP_NAMES = new ArrayList<>(List.of("конс", "кл.час"));
+
+    public UniversityTimetableExcelParser(byte[] bytes) throws IOException {
+        super(bytes);
+    }
+
     public UniversityTimetableExcelParser(String path) throws IOException {
         super(path);
     }
-
-    public static List<String> IGNORED_GROUP_NAMES = new ArrayList<>(List.of("конс", "кл.час"));
 
     /**
      * Возвращает true, если это файл аудиторий

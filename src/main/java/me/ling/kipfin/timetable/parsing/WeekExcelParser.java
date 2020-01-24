@@ -33,6 +33,10 @@ public class WeekExcelParser extends UniversityTimetableExcelParser<WeekSubjects
         super(path);
     }
 
+    public WeekExcelParser(byte[] bytes) throws IOException {
+        super(bytes);
+    }
+
     @Override
     public WeekSubjects<Subject> start() {
         log(this.getStringValue(1, 0));
