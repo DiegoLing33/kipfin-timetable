@@ -21,6 +21,6 @@ package me.ling.kipfin.timetable.exceptions;
 
 public class NoTimetableOnDateException extends RuntimeException {
     public NoTimetableOnDateException(String date){
-        super("Timetable on date [ " + date + " ] is undefined!");
+        super("Расписание на дату [ " + date + " ] не найдено!");
     }
 }
