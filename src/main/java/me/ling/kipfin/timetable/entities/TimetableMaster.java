@@ -28,6 +28,8 @@ import me.ling.kipfin.core.utils.JsonUtils;
 import me.ling.kipfin.database.university.GroupsDB;
 import me.ling.kipfin.timetable.parsing.WeekExcelParser;
 import me.ling.kipfin.timetable.parsing.ClassroomsExcelParser;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- *  Мастер-расписание
+ * Мастер-расписание
  */
 public class TimetableMaster {
 
@@ -48,10 +50,25 @@ public class TimetableMaster {
      * @return - объект мастер-расписания
      * @throws IOException - ошибки при чтении файлов для парсинга
      */
+    @NotNull
     public static TimetableMaster create(byte[] classroomsBytes, byte[] weekBytes) throws IOException {
+        return TimetableMaster.create(classroomsBytes, weekBytes, null);
+    }
+
+    /**
+     * Выполняет построение мастер-расписания
+     *
+     * @param classroomsBytes - байты аудиторий
+     * @param weekBytes       - байты недели
+     * @param timeInfo       - информация времени
+     * @return - объект мастер-расписания
+     * @throws IOException - ошибки при чтении файлов для парсинга
+     */
+    @NotNull
+    public static TimetableMaster create(byte[] classroomsBytes, byte[] weekBytes, @Nullable TimeInfo timeInfo) throws IOException {
         ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsBytes);
         WeekExcelParser weekExcelParser = new WeekExcelParser(weekBytes);
-        return TimetableMaster.create(classroomsExcelParser, weekExcelParser);
+        return TimetableMaster.create(classroomsExcelParser, weekExcelParser, timeInfo);
     }
 
     /**
@@ -62,10 +79,25 @@ public class TimetableMaster {
      * @return - объект мастер-расписания
      * @throws IOException - ошибки при чтении файлов для парсинга
      */
+    @NotNull
     public static TimetableMaster create(String classroomsFile, String weekFile) throws IOException {
+        return TimetableMaster.create(classroomsFile, weekFile, null);
+    }
+
+    /**
+     * Выполняет построение мастер-расписания
+     *
+     * @param classroomsFile - файл аудиторий
+     * @param weekFile       - файл недели
+     * @param timeInfo       - информация времени
+     * @return - объект мастер-расписания
+     * @throws IOException - ошибки при чтении файлов для парсинга
+     */
+    @NotNull
+    public static TimetableMaster create(String classroomsFile, String weekFile, @Nullable TimeInfo timeInfo) throws IOException {
         ClassroomsExcelParser classroomsExcelParser = new ClassroomsExcelParser(classroomsFile);
         WeekExcelParser weekExcelParser = new WeekExcelParser(weekFile);
-        return TimetableMaster.create(classroomsExcelParser, weekExcelParser);
+        return TimetableMaster.create(classroomsExcelParser, weekExcelParser, timeInfo);
     }
 
     /**
@@ -76,7 +108,7 @@ public class TimetableMaster {
      * @return - объект мастер-расписания
      * @throws IOException - ошибки при чтении файлов для парсинга
      */
-    public static TimetableMaster create(ClassroomsExcelParser classroomsExcelParser, WeekExcelParser weekExcelParser) throws IOException {
+    public static TimetableMaster create(ClassroomsExcelParser classroomsExcelParser, WeekExcelParser weekExcelParser, @Nullable TimeInfo timeInfo) throws IOException {
         var classrooms = classroomsExcelParser.start();
         var week = weekExcelParser.start();
 
@@ -110,7 +142,7 @@ public class TimetableMaster {
             }
         });
 
-        return new TimetableMaster(dateString, weekNumber, weekDayIndex, daySubjects, classrooms, week);
+        return new TimetableMaster(dateString, weekNumber, weekDayIndex, daySubjects, classrooms, week, timeInfo);
     }
 
     /**
@@ -143,17 +175,28 @@ public class TimetableMaster {
     @JsonProperty
     protected WeekSubjects<Subject> week;
 
+    @JsonProperty("time_info")
+    protected TimeInfo timeInfo;
+
     public TimetableMaster() {
     }
 
     public TimetableMaster(String date, Integer weekNumber, Integer weekDayIndex, DaySubjects<ExtendedSubject> timetable,
-                           Classrooms classrooms, WeekSubjects<Subject> week) {
+                           Classrooms classrooms, WeekSubjects<Subject> week){
+        this(date, weekNumber, weekDayIndex, timetable, classrooms, week, null);
+    }
+
+    public TimetableMaster(String date, Integer weekNumber, Integer weekDayIndex, DaySubjects<ExtendedSubject> timetable,
+                           Classrooms classrooms, WeekSubjects<Subject> week, @Nullable TimeInfo timeInfo) {
         this.date = date;
         this.weekNumber = weekNumber;
         this.weekDayIndex = weekDayIndex;
         this.timetable = timetable;
         this.classrooms = classrooms;
         this.week = week;
+        this.timeInfo = timeInfo;
+        if (this.timeInfo == null)
+            this.timeInfo = this.getTimeInfo();
     }
 
     /**
@@ -245,5 +288,19 @@ public class TimetableMaster {
                 weekDayIndex[0]++,
                 subjects
         )).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    /**
+     * Возвращает время
+     *
+     * @return -   время
+     */
+    @NotNull
+    public TimeInfo getTimeInfo() {
+        if (this.timeInfo == null) {
+            if (this.weekDayIndex == 3) this.timeInfo = TimeInfo.getForthShort();
+            else this.timeInfo = TimeInfo.getDefault();
+        }
+        return this.timeInfo;
     }
 }
