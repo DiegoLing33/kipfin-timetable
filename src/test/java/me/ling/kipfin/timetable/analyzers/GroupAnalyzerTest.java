@@ -56,9 +56,9 @@ class GroupAnalyzerTest {
         var indexes1 = analyzer.getClosetInfo(LocalTime.of(16, 35));
         assertEquals(indexes1.getClosetIndex(), 4);
 
-        var indexes2 = analyzer.getClosetInfo(LocalTime.of(18, 11));
+        var indexes2 = analyzer.getClosetInfo(LocalTime.of(17, 29));
         assertTrue(indexes2.isStarted());
-        assertTrue(indexes2.isEnded());
+        assertFalse(indexes2.isEnded());
 
         assertEquals(analyzer.getGroup(), "1ИСИП-319");
 
@@ -68,4 +68,9 @@ class GroupAnalyzerTest {
     }
 
 
+    @Test
+    void getSubjectByIndex() {
+        var analyzer = new GroupAnalyzer("1ИСИП-319", master);
+        assertEquals(analyzer.getSubjectByIndex(3).getTitle(), "Классный час");
+    }
 }

@@ -284,75 +284,10 @@ public class TimetableMaster {
      */
     @NotNull
     public List<ExtendedSubject> getGroupSubjects(String group) throws NoSubjectsException {
-
         var subjects = this.timetable.get(group);
         if (subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
         return subjects;
     }
-
-    /**
-     * Возвращает индекс первого предмета для группы
-     *
-     * @param group - группа
-     * @return - индекс
-     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
-     */
-    @NotNull
-    public Integer getFirstSubjectIndex(String group) throws NoSubjectsException {
-        int min = 999;
-        for (ExtendedSubject subject : this.getGroupSubjects(group))
-            if (subject.getIndex() < min) min = subject.getIndex();
-        if (min == 999) throw new NoSubjectsException(group, this.getDate());
-        return min;
-    }
-
-    /**
-     * Возвращает индекс последнего предмета для группы
-     *
-     * @param group - группа
-     * @return - индекс
-     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
-     */
-    @NotNull
-    public Integer getLastSubjectIndex(String group) throws NoSubjectsException {
-        int max = -999;
-        for (ExtendedSubject subject : this.getGroupSubjects(group))
-            if (subject.getIndex() > max) max = subject.getIndex();
-        if (max == -999) throw new NoSubjectsException(group, this.getDate());
-        return max;
-    }
-
-    /**
-     * Возвращает предмет по индексу
-     *
-     * @param group - группа
-     * @param index - индекс
-     * @return - предмет
-     * @throws NoSubjectsException - у группы нет предметов
-     */
-    @NotNull
-    public ExtendedSubject getGroupSubjectByIndex(String group, Integer index) throws NoSubjectsException {
-        for (ExtendedSubject subject : this.getGroupSubjects(group)) {
-            if (subject.getIndex().equals(index)) return subject;
-        }
-        throw new NoSubjectsException(group, this.getDate());
-    }
-
-    /**
-     * Возвращает true, если расписание группы содержит индекс
-     *
-     * @param group - группа
-     * @param index - индекс
-     * @return - результат выполнения
-     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
-     */
-    public boolean isGroupHasIndex(String group, Integer index) throws NoSubjectsException {
-        var subjects = this.getGroupSubjects(group);
-        if (subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
-        return subjects.stream()
-                .anyMatch(extendedSubject -> extendedSubject.getIndex().equals(index));
-    }
-
 
     /**
      * Формирует расписание группы на неделю
@@ -369,26 +304,6 @@ public class TimetableMaster {
                 weekDayIndex[0]++,
                 subjects
         )).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    /**
-     * Возвращает время по индексу
-     *
-     * @param index - индекс
-     * @return - время
-     */
-    public TimeInfoItem getTimeInfoByIndex(Integer index) {
-        return this.getTimeInfo().get(index);
-    }
-
-    /**
-     * Возвращает время по индексу
-     *
-     * @param subject - предмет
-     * @return - время
-     */
-    public TimeInfoItem getTimeInfoBySubject(@NotNull Subject subject) {
-        return this.getTimeInfoByIndex(subject.getIndex());
     }
 
     /**
