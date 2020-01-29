@@ -27,11 +27,10 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class GroupAnalyzerTest {
+class TeacherAnalyzerTest {
 
     public static String classroomsFile = "./src/test/resources/c.xlsx";
     public static String weekFile = "./src/test/resources/w.xls";
@@ -42,37 +41,26 @@ class GroupAnalyzerTest {
         Dotenv env = Dotenv.load();
         Bootloader bootloader = new Bootloader(env);
         bootloader.updateDatabase(false);
-        GroupAnalyzerTest.master = TimetableMaster.create(classroomsFile, weekFile);
+        TeacherAnalyzerTest.master = TimetableMaster.create(classroomsFile, weekFile);
     }
 
     @Test
-    public void testGroupAnalyzer() {
+    public void testTeacherAnalyzer(){
 
-        var analyzer = new GroupAnalyzer("1ИСИП-319", master);
+        var analyzer = new TeacherAnalyzer("Азовцева Вера Владимировна", master);
 
-        var indexes = analyzer.getClosetInfo(LocalTime.of(10, 0));
-        assertTrue(indexes.isStarted());
-
-        var indexes1 = analyzer.getClosetInfo(LocalTime.of(16, 35));
-        assertEquals(indexes1.getClosetIndex(), 4);
-
-        var indexes2 = analyzer.getClosetInfo(LocalTime.of(17, 29));
-        assertTrue(indexes2.isStarted());
-        assertFalse(indexes2.isEnded());
-
-        assertEquals(analyzer.getGroup(), "1ИСИП-319");
-
-        assertEquals(analyzer.getFirstIndex(), 0);
+        assertEquals(analyzer.getFirstIndex(), 3);
         assertEquals(analyzer.getLastIndex(), 4);
-        assertFalse(analyzer.hasIndex(5));
+        assertFalse(analyzer.hasIndex(0));
+        assertFalse(analyzer.hasIndex(1));
+        assertFalse(analyzer.hasIndex(2));
+        assertTrue(analyzer.hasIndex(3));
+        assertTrue(analyzer.hasIndex(4));
 
-        assertEquals(analyzer.getSubjects().size(), master.getTimetable().get("1ИСИП-319").size());
+        assertEquals(analyzer.getClassrooms().size(), master.getClassrooms().get("Азовцева Вера Владимировна").size());
+        assertEquals(analyzer.getTeacher(), "Азовцева Вера Владимировна");
+        assertEquals(analyzer.getObjectByIndex(3).getWhere(), "211");
     }
 
 
-    @Test
-    void getSubjectByIndex() {
-        var analyzer = new GroupAnalyzer("1ИСИП-319", master);
-        assertEquals(analyzer.getObjectByIndex(3).getTitle(), "Классный час");
-    }
 }

@@ -19,60 +19,39 @@
 
 package me.ling.kipfin.timetable.analyzers;
 
-import io.github.cdimascio.dotenv.Dotenv;
-import me.ling.kipfin.core.Bootloader;
+import me.ling.kipfin.timetable.abstracts.AbstractAnalyzer;
+import me.ling.kipfin.timetable.entities.Classroom;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
-import java.sql.SQLException;
-import java.time.LocalTime;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+/**
+ * Анализатор преподавателей
+ */
+public class TeacherAnalyzer extends AbstractAnalyzer<Classroom> {
 
-class GroupAnalyzerTest {
+    private final String teacher;
 
-    public static String classroomsFile = "./src/test/resources/c.xlsx";
-    public static String weekFile = "./src/test/resources/w.xls";
-    public static TimetableMaster master;
-
-    @BeforeAll
-    static void beforeAll() throws SQLException, IOException {
-        Dotenv env = Dotenv.load();
-        Bootloader bootloader = new Bootloader(env);
-        bootloader.updateDatabase(false);
-        GroupAnalyzerTest.master = TimetableMaster.create(classroomsFile, weekFile);
+    public TeacherAnalyzer(String teacher, @NotNull TimetableMaster master) {
+        super(master.getTimeInfo(), master.getClassrooms().get(teacher));
+        this.teacher = teacher;
     }
 
-    @Test
-    public void testGroupAnalyzer() {
-
-        var analyzer = new GroupAnalyzer("1ИСИП-319", master);
-
-        var indexes = analyzer.getClosetInfo(LocalTime.of(10, 0));
-        assertTrue(indexes.isStarted());
-
-        var indexes1 = analyzer.getClosetInfo(LocalTime.of(16, 35));
-        assertEquals(indexes1.getClosetIndex(), 4);
-
-        var indexes2 = analyzer.getClosetInfo(LocalTime.of(17, 29));
-        assertTrue(indexes2.isStarted());
-        assertFalse(indexes2.isEnded());
-
-        assertEquals(analyzer.getGroup(), "1ИСИП-319");
-
-        assertEquals(analyzer.getFirstIndex(), 0);
-        assertEquals(analyzer.getLastIndex(), 4);
-        assertFalse(analyzer.hasIndex(5));
-
-        assertEquals(analyzer.getSubjects().size(), master.getTimetable().get("1ИСИП-319").size());
+    /**
+     * Возвращает имя преподавателя
+     * @return  - имя преподавателя
+     */
+    public String getTeacher() {
+        return teacher;
     }
 
-
-    @Test
-    void getSubjectByIndex() {
-        var analyzer = new GroupAnalyzer("1ИСИП-319", master);
-        assertEquals(analyzer.getObjectByIndex(3).getTitle(), "Классный час");
+    /**
+     * Возвращает аудитории
+     * @return  - аудитории
+     */
+    public List<Classroom> getClassrooms() {
+        return this.getObjects();
     }
+
 }
