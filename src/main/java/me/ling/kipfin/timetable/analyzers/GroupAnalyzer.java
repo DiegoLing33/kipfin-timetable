@@ -52,7 +52,7 @@ public class GroupAnalyzer {
      * @return  - результат
      */
     public boolean isEnded(@NotNull LocalTime time){
-        var item = this.timeInfo.get(this.subjectsAnalyzer.getLastIndex()).getEndsTime();
+        var item = this.timeInfo.get(this.getSubjectsAnalyzer().getLastIndex()).getEndsTime();
         return time.isAfter(item);
     }
 
@@ -62,7 +62,7 @@ public class GroupAnalyzer {
      * @return  - результат
      */
     public boolean isStarted(@NotNull LocalTime time){
-        var item = this.timeInfo.get(this.subjectsAnalyzer.getFirstIndex()).getStartsTime();
+        var item = this.timeInfo.get(this.getSubjectsAnalyzer().getFirstIndex()).getStartsTime();
         return time.isAfter(item);
     }
 
