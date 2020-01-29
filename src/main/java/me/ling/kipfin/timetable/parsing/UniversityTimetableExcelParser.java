@@ -41,9 +41,6 @@ import java.util.function.Function;
  */
 public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
 
-
-    public static List<String> IGNORED_GROUP_NAMES = new ArrayList<>(List.of("конс", "кл.час"));
-
     public UniversityTimetableExcelParser(byte[] bytes) throws IOException {
         super(bytes);
     }
@@ -54,12 +51,23 @@ public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
 
     /**
      * Возвращает true, если это файл аудиторий
-     * @return  - результат проверки файла
+     *
+     * @return - результат проверки файла
      */
-    public Boolean isClassroomsFile(){
+    public Boolean isClassroomsFile() {
         var cell = this.getCell(0, 0);
         return cell != null && cell.getCellType().equals(CellType.STRING) &&
                 cell.getStringCellValue().contains("Аудитор");
+    }
+
+    /**
+     * Возвращает true, если стрка похожа на группу
+     *
+     * @param s - строка
+     * @return - результат
+     */
+    public boolean isGroupString(String s) {
+        return s != null && s.contains("-");
     }
 
     /**
@@ -81,15 +89,15 @@ public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
                 this.wait("Найден пробел. Изучение по частям!");
                 List<String> groups = List.of(fixed.split(" "));
                 for (String __group : groups) {
-                    if (!IGNORED_GROUP_NAMES.contains(__group) && !GroupsDB.shared.contains(universityGroup ->
+                    if (this.isGroupString(__group) && !GroupsDB.shared.contains(universityGroup ->
                             universityGroup.getTitle().equals(__group)))
                         throw new GroupNotFoundException(__group);
                     this.result(true);
                 }
                 return fixed;
             }
-            if (GroupsDB.shared.contains(universityGroup -> universityGroup.getTitle().equals(fixed))
-                    || IGNORED_GROUP_NAMES.contains(fixed)) return fixed;
+            if (GroupsDB.shared.contains(universityGroup ->
+                    universityGroup.getTitle().equals(fixed)) || !this.isGroupString(fixed)) return fixed;
             else throw new GroupNotFoundException(fixed);
         }
         return null;
@@ -139,14 +147,18 @@ public abstract class UniversityTimetableExcelParser<T> extends ExcelParser<T> {
      */
     @Nullable
     protected String getClassroomCell(int rowIndex, int colIndex) {
-        var cell = this.getCell(rowIndex, colIndex);
-        if (cell != null) {
-            if (cell.getCellType() == CellType.STRING)
-                return StringUtils.removeAllSpaces(cell.getStringCellValue());
-            if (cell.getCellType() == CellType.NUMERIC)
-                return StringUtils.removeAllSpaces(String.valueOf((int) cell.getNumericCellValue()));
+        try {
+            var cell = this.getCell(rowIndex, colIndex);
+            if (cell != null) {
+                if (cell.getCellType() == CellType.STRING)
+                    return StringUtils.removeAllSpaces(cell.getStringCellValue());
+                if (cell.getCellType() == CellType.NUMERIC)
+                    return StringUtils.removeAllSpaces(String.valueOf((int) cell.getNumericCellValue()));
+            }
+            return null;
+        }catch (NullPointerException e){
+            return null;
         }
-        return null;
     }
 
     /**
