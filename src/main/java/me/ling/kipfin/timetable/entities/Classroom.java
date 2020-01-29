@@ -20,8 +20,9 @@
 package me.ling.kipfin.timetable.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import me.ling.kipfin.abstracts.Indexable;
 
-public class Classroom {
+public class Classroom extends Indexable<Classroom> {
 
     @JsonProperty
     protected String who;

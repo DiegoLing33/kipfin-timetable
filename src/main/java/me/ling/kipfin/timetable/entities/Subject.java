@@ -20,12 +20,12 @@
 package me.ling.kipfin.timetable.entities;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.jetbrains.annotations.NotNull;
+import me.ling.kipfin.abstracts.Indexable;
 
 /**
  * Цисциплина
  */
-public class Subject implements Comparable<Subject> {
+public class Subject<T> extends Indexable<T> {
 
     @JsonProperty("subject_name")
     protected String title;
@@ -57,15 +57,5 @@ public class Subject implements Comparable<Subject> {
      */
     public Integer getIndex() {
         return index;
-    }
-
-    /**
-     * Сравнивает дисциплины
-     * @param o - объект сравнения
-     * @return  - результат сравнения
-     */
-    @Override
-    public int compareTo(@NotNull Subject o) {
-        return this.getIndex().compareTo(o.getIndex());
     }
 }

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 /**
  * Расширенная сущность дисциплины
  */
-public class ExtendedSubject extends Subject {
+public class ExtendedSubject extends Subject<ExtendedSubject> {
 
     @JsonProperty("subject_who")
     protected TeacherClassroomObjects who = new TeacherClassroomObjects();
