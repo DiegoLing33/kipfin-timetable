@@ -269,9 +269,14 @@ public class TimetableMaster {
      *
      * @param group - группа
      * @return - массив расписания
+     * @throws NoSubjectsException - выбрасывает исключение, когда у группы нет предметов
      */
-    public List<ExtendedSubject> getGroupSubjects(String group) {
-        return this.timetable.get(group);
+    @NotNull
+    public List<ExtendedSubject> getGroupSubjects(String group) throws NoSubjectsException {
+
+        var subjects = this.timetable.get(group);
+        if (subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
+        return subjects;
     }
 
     /**
@@ -324,14 +329,15 @@ public class TimetableMaster {
 
     /**
      * Возвращает true, если расписание группы содержит индекс
+     *
      * @param group - группа
      * @param index - индекс
-     * @return      - результат выполнения
+     * @return - результат выполнения
      * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
      */
     public boolean isGroupHasIndex(String group, Integer index) throws NoSubjectsException {
         var subjects = this.getGroupSubjects(group);
-        if(subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
+        if (subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
         return subjects.stream()
                 .anyMatch(extendedSubject -> extendedSubject.getIndex().equals(index));
     }
