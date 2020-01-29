@@ -22,7 +22,7 @@ package me.ling.kipfin.timetable.analyzers;
 import io.github.cdimascio.dotenv.Dotenv;
 import me.ling.kipfin.core.Bootloader;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -33,21 +33,21 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GroupAnalyzerTest {
 
-    public String classroomsFile = "./src/test/resources/c.xlsx";
-    public String weekFile = "./src/test/resources/w.xls";
+    public static String classroomsFile = "./src/test/resources/c.xlsx";
+    public static String weekFile = "./src/test/resources/w.xls";
+    public static TimetableMaster master;
 
-    @BeforeEach
-    void setUp() throws SQLException {
+    @BeforeAll
+    static void beforeAll() throws SQLException, IOException {
         Dotenv env = Dotenv.load();
         Bootloader bootloader = new Bootloader(env);
         bootloader.updateDatabase(false);
-
+        GroupAnalyzerTest.master = TimetableMaster.create(classroomsFile, weekFile);
     }
 
     @Test
-    public void testGroupAnalyzer() throws IOException {
+    public void testGroupAnalyzer() {
 
-        var master = TimetableMaster.create(classroomsFile, weekFile);
         var analyzer = new GroupAnalyzer("1ИСИП-319", master);
 
         var indexes = analyzer.getClosetInfo(LocalTime.of(10, 0));
@@ -59,6 +59,17 @@ class GroupAnalyzerTest {
         var indexes2 = analyzer.getClosetInfo(LocalTime.of(18, 11));
         assertTrue(indexes2.isStarted());
         assertTrue(indexes2.isEnded());
+
+        assertEquals(analyzer.getGroup(), "1ИСИП-319");
+    }
+
+    @Test
+    public void testSubjectsAnalyzer(){
+        var analyzer = new SubjectsAnalyzer<>(master.getGroupSubjects("1ОИБАС-1019"));
+
+        assertEquals(analyzer.getFirstIndex(), 0);
+        assertEquals(analyzer.getLastIndex(), 3);
+        assertFalse(analyzer.hasIndex(4));
     }
 
 }
