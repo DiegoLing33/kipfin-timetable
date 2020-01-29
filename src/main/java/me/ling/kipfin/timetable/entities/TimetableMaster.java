@@ -26,6 +26,7 @@ import me.ling.kipfin.core.log.Logger;
 import me.ling.kipfin.core.utils.DateUtils;
 import me.ling.kipfin.core.utils.JsonUtils;
 import me.ling.kipfin.database.university.GroupsDB;
+import me.ling.kipfin.timetable.exceptions.timetable.NoSubjectsException;
 import me.ling.kipfin.timetable.parsing.WeekExcelParser;
 import me.ling.kipfin.timetable.parsing.ClassroomsExcelParser;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,7 @@ public class TimetableMaster {
      *
      * @param classroomsBytes - байты аудиторий
      * @param weekBytes       - байты недели
-     * @param timeInfo       - информация времени
+     * @param timeInfo        - информация времени
      * @return - объект мастер-расписания
      * @throws IOException - ошибки при чтении файлов для парсинга
      */
@@ -182,7 +183,7 @@ public class TimetableMaster {
     }
 
     public TimetableMaster(String date, Integer weekNumber, Integer weekDayIndex, DaySubjects<ExtendedSubject> timetable,
-                           Classrooms classrooms, WeekSubjects<Subject> week){
+                           Classrooms classrooms, WeekSubjects<Subject> week) {
         this(date, weekNumber, weekDayIndex, timetable, classrooms, week, null);
     }
 
@@ -272,6 +273,69 @@ public class TimetableMaster {
     public List<ExtendedSubject> getGroupSubjects(String group) {
         return this.timetable.get(group);
     }
+
+    /**
+     * Возвращает индекс первого предмета для группы
+     *
+     * @param group - группа
+     * @return - индекс
+     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
+     */
+    @NotNull
+    public Integer getFirstSubjectIndex(String group) throws NoSubjectsException {
+        int min = 999;
+        for (ExtendedSubject subject : this.getGroupSubjects(group))
+            if (subject.getIndex() < min) min = subject.getIndex();
+        if (min == 999) throw new NoSubjectsException(group, this.getDate());
+        return min;
+    }
+
+    /**
+     * Возвращает индекс последнего предмета для группы
+     *
+     * @param group - группа
+     * @return - индекс
+     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
+     */
+    @NotNull
+    public Integer getLastSubjectIndex(String group) throws NoSubjectsException {
+        int max = -999;
+        for (ExtendedSubject subject : this.getGroupSubjects(group))
+            if (subject.getIndex() > max) max = subject.getIndex();
+        if (max == -999) throw new NoSubjectsException(group, this.getDate());
+        return max;
+    }
+
+    /**
+     * Возвращает предмет по индексу
+     *
+     * @param group - группа
+     * @param index - индекс
+     * @return - предмет
+     * @throws NoSubjectsException - у группы нет предметов
+     */
+    @NotNull
+    public ExtendedSubject getGroupSubjectByIndex(String group, Integer index) throws NoSubjectsException {
+        for (ExtendedSubject subject : this.getGroupSubjects(group)) {
+            if (subject.getIndex().equals(index)) return subject;
+        }
+        throw new NoSubjectsException(group, this.getDate());
+    }
+
+    /**
+     * Возвращает true, если расписание группы содержит индекс
+     * @param group - группа
+     * @param index - индекс
+     * @return      - результат выполнения
+     * @throws NoSubjectsException - исключение, когда у группы нет предметов в этот день
+     */
+    public boolean isGroupHasIndex(String group, Integer index) throws NoSubjectsException {
+        var subjects = this.getGroupSubjects(group);
+        if(subjects.size() == 0) throw new NoSubjectsException(group, this.getDate());
+        return subjects.stream()
+                .anyMatch(extendedSubject -> extendedSubject.getIndex().equals(index));
+    }
+
 
     /**
      * Формирует расписание группы на неделю

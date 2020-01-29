@@ -16,7 +16,7 @@ public class TimeInfo extends ArrayList<TimeInfoItem> {
      */
     public static TimeInfo getDefault() {
         TimeInfo timeInfo = new TimeInfo();
-        timeInfo.add(new TimeInfoItem("9:30", "11:00"));
+        timeInfo.add(new TimeInfoItem("09:30", "11:00"));
         timeInfo.add(new TimeInfoItem("11:10", "12:40"));
         timeInfo.add(new TimeInfoItem("13:20", "14:50"));
         timeInfo.add(new TimeInfoItem("15:00", "16:30"));
@@ -29,7 +29,7 @@ public class TimeInfo extends ArrayList<TimeInfoItem> {
      */
     public static TimeInfo getForthShort() {
         TimeInfo timeInfo = new TimeInfo();
-        timeInfo.add(new TimeInfoItem("9:30", "11:00"));
+        timeInfo.add(new TimeInfoItem("09:30", "11:00"));
         timeInfo.add(new TimeInfoItem("11:10", "12:40"));
         timeInfo.add(new TimeInfoItem("13:20", "14:50"));
         timeInfo.add(new TimeInfoItem("15:00", "15:45"));
