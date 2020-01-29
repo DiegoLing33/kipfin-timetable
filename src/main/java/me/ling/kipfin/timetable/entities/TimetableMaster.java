@@ -46,6 +46,14 @@ import java.util.stream.Collectors;
 public class TimetableMaster {
 
     /**
+     * Флаг отладки
+     *
+     * Во время отладки будут созданы отладочные JSON файлы
+     *
+     */
+    public static boolean ENABLE_DEBUG = false;
+
+    /**
      * Выполняет построение мастер-расписания
      *
      * @param classroomsBytes - байты аудиторий
@@ -115,16 +123,17 @@ public class TimetableMaster {
         var classrooms = classroomsExcelParser.start();
         var week = weekExcelParser.start();
 
-        JsonUtils.saveJson(classrooms, "c.json");
-        JsonUtils.saveJson(week, "w.json");
-
         var date = classroomsExcelParser.getDate();
         var dateString = DateUtils.toLocalDateString(date);
         var weekDayIndex = DateUtils.getLocalWeekDay(date);
         var weekNumber = DateUtils.getWeeksCount(DateUtils.fromLocalDateString("01.09.2019"), date);
 
-        Logger.logAs("TMR Builder", "Debug: week size", week.size());
-        Logger.logAs("TMR Builder", "Debug: today [", weekDayIndex, "] size:", week.get(weekDayIndex).values().size());
+        if (ENABLE_DEBUG) {
+            JsonUtils.saveJson(classrooms, "c.json");
+            JsonUtils.saveJson(week, "w.json");
+            Logger.logAs("TMR Builder", "Debug: week size", week.size());
+            Logger.logAs("TMR Builder", "Debug: today [", weekDayIndex, "] size:", week.get(weekDayIndex).values().size());
+        }
 
         DaySubjects<ExtendedSubject> daySubjects = new DaySubjects<>();
         GroupsDB.shared.getCache().values().forEach(universityGroup -> {
