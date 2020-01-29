@@ -1,12 +1,15 @@
 package me.ling.kipfin.timetable.analyzers;
 
+import me.ling.kipfin.core.utils.ListUtils;
 import me.ling.kipfin.timetable.entities.ExtendedSubject;
+import me.ling.kipfin.timetable.entities.Subject;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
 import me.ling.kipfin.timetable.entities.timeinfo.TimeIndexes;
 import me.ling.kipfin.timetable.entities.timeinfo.TimeInfo;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,8 +19,9 @@ public class GroupAnalyzer {
 
     private final TimeInfo timeInfo;
     private final String group;
-    private final SubjectsAnalyzer<ExtendedSubject> subjectsAnalyzer;
     private final List<ExtendedSubject> subjects;
+    private final Integer firstIndex;
+    private final Integer lastIndex;
 
     /**
      * Конструктор
@@ -26,9 +30,52 @@ public class GroupAnalyzer {
      */
     public GroupAnalyzer(String group, @NotNull TimetableMaster master) {
         this.group = group;
-        this.subjects = master.getGroupSubjects(group);
         this.timeInfo = master.getTimeInfo();
-        this.subjectsAnalyzer = new SubjectsAnalyzer<>(this.subjects);
+        this.subjects = master.getGroupSubjects(group);
+        this.firstIndex = this.subjects.get(0).getIndex();
+        this.lastIndex = this.subjects.get(this.subjects.size() - 1).getIndex();
+
+        Collections.sort(this.subjects);
+    }
+
+
+    /**
+     * Возвращает дисциплины
+     *
+     * @return - дисциплины
+     */
+    public List<ExtendedSubject> getSubjects() {
+        return subjects;
+    }
+
+    /**
+     * Возвращает индекс первой пары
+     *
+     * @return - индекс первой пары
+     */
+    public Integer getFirstIndex() {
+        return firstIndex;
+    }
+
+    /**
+     * Возвращает индекс последней пары
+     *
+     * @return - индекс последней пары
+     */
+    public Integer getLastIndex() {
+        return lastIndex;
+    }
+
+    /**
+     * Возвращает true, если индекс находится в предметах
+     * <p>
+     * Например: протестировав индекс 0, можно узнать о наличии традиционной первой пары
+     *
+     * @param index - индекс
+     * @return - результат выполнения
+     */
+    public boolean hasIndex(int index) {
+        return ListUtils.contains(this.getSubjects(), Subject::getIndex, index);
     }
 
     /**
@@ -52,7 +99,7 @@ public class GroupAnalyzer {
      * @return  - результат
      */
     public boolean isEnded(@NotNull LocalTime time){
-        var item = this.timeInfo.get(this.getSubjectsAnalyzer().getLastIndex()).getEndsTime();
+        var item = this.timeInfo.get(this.getLastIndex()).getEndsTime();
         return time.isAfter(item);
     }
 
@@ -62,7 +109,7 @@ public class GroupAnalyzer {
      * @return  - результат
      */
     public boolean isStarted(@NotNull LocalTime time){
-        var item = this.timeInfo.get(this.getSubjectsAnalyzer().getFirstIndex()).getStartsTime();
+        var item = this.timeInfo.get(this.getFirstIndex()).getStartsTime();
         return time.isAfter(item);
     }
 
@@ -74,11 +121,4 @@ public class GroupAnalyzer {
         return group;
     }
 
-    /**
-     * Возвращает анализатор предметов
-     * @return  - анализатор предметов
-     */
-    public SubjectsAnalyzer<ExtendedSubject> getSubjectsAnalyzer() {
-        return subjectsAnalyzer;
-    }
 }

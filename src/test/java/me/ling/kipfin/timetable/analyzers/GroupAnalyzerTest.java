@@ -61,15 +61,11 @@ class GroupAnalyzerTest {
         assertTrue(indexes2.isEnded());
 
         assertEquals(analyzer.getGroup(), "1ИСИП-319");
-    }
-
-    @Test
-    public void testSubjectsAnalyzer(){
-        var analyzer = new SubjectsAnalyzer<>(master.getGroupSubjects("1ОИБАС-1019"));
 
         assertEquals(analyzer.getFirstIndex(), 0);
-        assertEquals(analyzer.getLastIndex(), 3);
-        assertFalse(analyzer.hasIndex(4));
+        assertEquals(analyzer.getLastIndex(), 4);
+        assertFalse(analyzer.hasIndex(5));
     }
+
 
 }
