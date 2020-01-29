@@ -67,6 +67,7 @@ public final class ClassroomsExcelParser extends UniversityTimetableExcelParser<
         // Цикл по строкам аудиторий
         for (int rowIndex = 2; rowIndex < this.getRowsCount(); rowIndex += 2) {
             String teacher = this.getTeacherCell(rowIndex, 0);
+            if(teacher == null) continue; // Пустя строка
             List<Classroom> classroomList = new ArrayList<>();
 
             for (int colIndex = 1; colIndex < this.getColsCount(rowIndex); colIndex++) {
