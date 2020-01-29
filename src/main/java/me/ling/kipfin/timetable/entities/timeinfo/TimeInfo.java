@@ -1,4 +1,4 @@
-package me.ling.kipfin.timetable.entities;
+package me.ling.kipfin.timetable.entities.timeinfo;
 
 import org.jetbrains.annotations.NotNull;
 
