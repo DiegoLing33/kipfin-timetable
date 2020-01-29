@@ -26,6 +26,8 @@ import me.ling.kipfin.core.log.Logger;
 import me.ling.kipfin.core.utils.DateUtils;
 import me.ling.kipfin.core.utils.JsonUtils;
 import me.ling.kipfin.database.university.GroupsDB;
+import me.ling.kipfin.timetable.entities.timeinfo.TimeInfo;
+import me.ling.kipfin.timetable.entities.timeinfo.TimeInfoItem;
 import me.ling.kipfin.timetable.exceptions.timetable.NoSubjectsException;
 import me.ling.kipfin.timetable.parsing.WeekExcelParser;
 import me.ling.kipfin.timetable.parsing.ClassroomsExcelParser;
