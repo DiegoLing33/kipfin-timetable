@@ -9,6 +9,9 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalTime;
 import java.util.List;
 
+/**
+ * Анализатор расписания группы
+ */
 public class GroupAnalyzer {
 
     private final TimeInfo timeInfo;
