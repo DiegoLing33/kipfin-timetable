@@ -361,6 +361,26 @@ public class TimetableMaster {
     }
 
     /**
+     * Возвращает время по индексу
+     *
+     * @param index - индекс
+     * @return - время
+     */
+    public TimeInfoItem getTimeInfoByIndex(Integer index) {
+        return this.getTimeInfo().get(index);
+    }
+
+    /**
+     * Возвращает время по индексу
+     *
+     * @param subject - предмет
+     * @return - время
+     */
+    public TimeInfoItem getTimeInfoBySubject(@NotNull Subject subject) {
+        return this.getTimeInfoByIndex(subject.getIndex());
+    }
+
+    /**
      * Возвращает время
      *
      * @return -   время
