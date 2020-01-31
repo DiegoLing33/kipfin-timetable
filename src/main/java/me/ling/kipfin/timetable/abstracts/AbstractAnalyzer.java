@@ -111,6 +111,13 @@ public abstract class AbstractAnalyzer<T extends Indexable<T>> {
         return time.isAfter(item);
     }
 
+    /**
+     * Возвращает информацию о времени
+     * @return  - информация о времени
+     */
+    public TimeInfo getTimeInfo() {
+        return timeInfo;
+    }
 
     /**
      * Возвращает true, если индекс находится в предметах
