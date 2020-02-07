@@ -34,7 +34,7 @@ public class TeacherAnalyzer extends AbstractAnalyzer<Classroom> {
     private final String teacher;
 
     public TeacherAnalyzer(String teacher, @NotNull TimetableMaster master) {
-        super(master.getTimeInfo(), master.getClassrooms().get(teacher));
+        super(master.getTimeInfo(), master.getClassroomsForName(teacher));
         this.teacher = teacher;
     }
 
