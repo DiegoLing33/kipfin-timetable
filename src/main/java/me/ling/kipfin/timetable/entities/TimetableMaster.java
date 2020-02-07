@@ -27,7 +27,6 @@ import me.ling.kipfin.core.utils.DateUtils;
 import me.ling.kipfin.core.utils.JsonUtils;
 import me.ling.kipfin.database.university.GroupsDB;
 import me.ling.kipfin.timetable.entities.timeinfo.TimeInfo;
-import me.ling.kipfin.timetable.entities.timeinfo.TimeInfoItem;
 import me.ling.kipfin.timetable.exceptions.timetable.NoSubjectsException;
 import me.ling.kipfin.timetable.parsing.WeekExcelParser;
 import me.ling.kipfin.timetable.parsing.ClassroomsExcelParser;
@@ -245,6 +244,18 @@ public class TimetableMaster {
      */
     public Classrooms getClassrooms() {
         return classrooms;
+    }
+
+    /**
+     * Возвращает расписание аудиторий для преподавателя. Еспи пар нет, выбрасывает NoSubjectsException
+     * @param name - имя преподавателя
+     * @return  - массив аудиторий
+     * @throws NoSubjectsException - пар нет
+     */
+    public List<Classroom> getClassroomsForName(String name) throws NoSubjectsException{
+        if(this.getClassrooms().containsKey(name))
+            return this.getClassrooms().get(name);
+        throw new NoSubjectsException(name, this.getDate());
     }
 
     /**
