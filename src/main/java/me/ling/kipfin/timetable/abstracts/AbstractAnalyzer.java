@@ -138,7 +138,14 @@ public abstract class AbstractAnalyzer<T extends Indexable<T>> {
      * @return - результат TimeIndexes
      */
     public TimeIndexes getClosetInfo(LocalTime time) {
-        int closetIndex = ListUtils.get(this.getObjects(), s -> time.isBefore(this.timeInfo.get(s.getIndex()).getEndsTime())).getIndex();
+        int closetIndex = -1;
+        try {
+            closetIndex = ListUtils.get(this.getObjects(), s -> {
+                return time.isBefore(this.timeInfo.get(s.getIndex()).getEndsTime());
+            }).getIndex();
+        }catch (Exception e){
+            // Nothing is done
+        }
         return new TimeIndexes(closetIndex, this.isEnded(time), this.isStarted(time));
     }
 
