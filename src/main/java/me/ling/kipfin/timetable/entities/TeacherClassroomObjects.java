@@ -19,7 +19,10 @@
 
 package me.ling.kipfin.timetable.entities;
 
+import me.ling.kipfin.core.utils.ListUtils;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,17 +46,19 @@ public class TeacherClassroomObjects extends HashMap<String, String> {
 
     /**
      * Возвращает сет преподавателей через запятую
+     *
      * @return - преподаватели через запятую
      */
-    public String getTeachersJoin(){
-        return String.join(", ", this.keySet());
+    public String getTeachersJoin() {
+        return String.join(", ", ListUtils.createUnique(List.copyOf(this.keySet())));
     }
 
     /**
      * Возвращает сет аудиторий через запятую
+     *
      * @return - аудитории через запятую
      */
-    public String getClassroomsJoin(){
-        return String.join(", ", this.values());
+    public String getClassroomsJoin() {
+        return String.join(", ", ListUtils.createUnique(List.copyOf(this.values())));
     }
 }
