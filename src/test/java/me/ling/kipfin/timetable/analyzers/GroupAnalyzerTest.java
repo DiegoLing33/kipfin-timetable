@@ -69,6 +69,12 @@ class GroupAnalyzerTest {
         assertEquals(analyzer.getSubjects().size(), master.getTimetable().get("1ИСИП-319").size());
     }
 
+    @Test
+    public void testUniques(){
+        var analyzer = new GroupAnalyzer("1ОИБАС-1219", master);
+        var sub = analyzer.getSubjects().get(3);
+        assertNotEquals(sub.getWho().getClassroomsJoin(), "116, 116");
+    }
 
     @Test
     void getSubjectByIndex() {
