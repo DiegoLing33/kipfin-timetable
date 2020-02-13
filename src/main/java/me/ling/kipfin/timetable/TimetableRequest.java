@@ -19,8 +19,11 @@
 
 package me.ling.kipfin.timetable;
 
+import me.ling.kipfin.abstracts.Indexable;
 import me.ling.kipfin.core.utils.DateUtils;
 import me.ling.kipfin.timetable.abstracts.AbstractAnalyzer;
+import me.ling.kipfin.timetable.analyzers.GroupAnalyzer;
+import me.ling.kipfin.timetable.analyzers.TeacherAnalyzer;
 import me.ling.kipfin.timetable.entities.TimetableMaster;
 import me.ling.kipfin.timetable.enums.StudentDayMomentState;
 import me.ling.kipfin.timetable.enums.StudentDayState;
@@ -104,10 +107,11 @@ public class TimetableRequest {
 
     /**
      * Возвращает состояние момента дня
-     * @param abstractAnalyzer  - анализатор
-     * @return  - состояние
+     *
+     * @param abstractAnalyzer - анализатор
+     * @return - состояние
      */
-    public StudentDayMomentState getDayMomentState(AbstractAnalyzer abstractAnalyzer) {
+    public StudentDayMomentState getDayMomentState(@NotNull AbstractAnalyzer<?> abstractAnalyzer) {
         var closet = abstractAnalyzer.getClosetInfo(this.getTime());
         if (closet.isStarted() && !closet.isEnded()) return StudentDayMomentState.STARTED;
         if (closet.isEnded()) return StudentDayMomentState.ENDED;
@@ -115,4 +119,26 @@ public class TimetableRequest {
         return StudentDayMomentState.EARLY;
     }
 
+    /**
+     * Возвращает состояние момента дня
+     * <p>
+     * На основе ключа будет создан анализатор `TimetableRequest::createAnalyzer`.
+     *
+     * @param key - ключ
+     * @return - состояние
+     */
+    public StudentDayMomentState getDayMomentState(@NotNull String key) {
+        return this.getDayMomentState(this.createAnalyzer(key));
+    }
+
+    /**
+     * Создает анализатор по ключу
+     *
+     * @param key - ключ
+     * @return - анализатор GroupAnalyzer или TeacherAnalyzer
+     */
+    public AbstractAnalyzer<? extends Indexable<?>> createAnalyzer(@NotNull String key) {
+        if (key.contains(" ")) return new TeacherAnalyzer(key, this.getMaster());
+        return new GroupAnalyzer(key, this.getMaster());
+    }
 }
