@@ -33,11 +33,27 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Запрос расписания
  */
 public class TimetableRequest {
+
+    /**
+     * Возвращает ближайший рабочий день к переданной доте.
+     * Если переданная дата является рабочим днем - возвращает её.
+     *
+     * @param date  - дата
+     * @return  - дата
+     */
+    public static LocalDate getClosetWorkingDay(LocalDate date){
+        int localWeekDay = DateUtils.getLocalWeekDay(date);
+        if (localWeekDay == 5) return date.plus(2, ChronoUnit.DAYS);
+        else if (localWeekDay == 6) return date.plus(1, ChronoUnit.DAYS);
+        return date;
+    }
 
     private final LocalDate date;
     private final LocalTime time;
@@ -140,5 +156,29 @@ public class TimetableRequest {
     public AbstractAnalyzer<? extends Indexable<?>> createAnalyzer(@NotNull String key) {
         if (key.contains(" ")) return new TeacherAnalyzer(key, this.getMaster());
         return new GroupAnalyzer(key, this.getMaster());
+    }
+
+    /**
+     * Возвращает дату в строковом формате
+     * @return  - дата в формате DD.MM.YYYY
+     */
+    public String getLocalDateString(){
+        return DateUtils.toLocalDateString(this.getDate());
+    }
+
+    /**
+     * Возвращает строку времени
+     * @return  - строка времени
+     */
+    public String getTimeString(){
+        return DateUtils.toLocalTimeString(this.getTime());
+    }
+
+    /**
+     * Возвращает LocalDateTime объект
+     * @return  - объект даты и времени
+     */
+    public LocalDateTime getLocalDateTime(){
+        return LocalDateTime.of(this.getDate(), this.getTime());
     }
 }
